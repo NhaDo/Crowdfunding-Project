@@ -58,9 +58,24 @@ describe('Campaigns', ()=>{
                 from: accounts[1],
                 value: 5,
             })
+            assert(false);
         }
         catch(err){
             assert(err);
         }
+    })
+
+    it('allows the manager to make a payment request', async()=> {
+        await campaign.methods.createRequest(
+            'just a booty call', // description
+            web3.utils.toWei('1', 'ether'), // value
+            accounts[2] // recipient
+        ).send({
+            from: accounts[0],
+            gas: '1000000'
+        })
+
+        const request = await campaign.methods.requests(0).call();
+        assert.equal('just a booty call', request.description);
     })
 })
