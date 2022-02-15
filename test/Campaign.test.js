@@ -78,4 +78,39 @@ describe('Campaigns', ()=>{
         const request = await campaign.methods.requests(0).call();
         assert.equal('just a booty call', request.description);
     })
+
+    it('processes requests', async()=>{
+        //contribute 10eth
+        await campaign.methods.contribute().send({
+            from: accounts[0],
+            value: web3.utils.toWei('10', 'ether')
+        })
+
+        //create request to send 1eth to accounts[1]
+        await campaign.methods
+            .createRequest('nothing matters', web3.utils.toWei('5','ether'), accounts[1])
+            .send({
+                from: accounts[0],
+                gas: 2000000
+            })
+
+        //vote approve request
+        await campaign.methods.approveRequest(0).send({
+            from: accounts[0],
+            gas: 1000000
+        })
+
+        //finalizeRequest and send 1eth to the recipient
+        await campaign.methods.finalizeRequest(0).send({
+            from: accounts[0],
+            gas: 1000000
+        })
+        
+        //check balance of the recipient >0
+        let balance = await web3.eth.getBalance(accounts[1]);
+        balance = web3.utils.fromWei(balance, 'ether');
+        balance = parseFloat(balance);
+        console.log(balance);
+        assert(balance > 104);
+    })
 })
