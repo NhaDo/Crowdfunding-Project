@@ -1,6 +1,4 @@
 import Web3 from 'web3';
-import react from 'react';
-import React, { useEffect } from "react";
 
 
 let web3;
