@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import {Menu, Button} from 'semantic-ui-react';
+import {Link} from '../routes';
 
 export default()=>{
     return(
         <Menu style={{ marginTop:'20px'}}>
-            <Menu.Item><b primary>CrowdCoins</b></Menu.Item>
-
+            <Link route='/'><a className='item'>CrowdCoin</a></Link>
             <Menu.Menu position='right'>
-                <Menu.Item>Campaigns</Menu.Item>
-                <Menu.Item><Button icon="add" primary/></Menu.Item>
+                <Link route='/'><a className='item'>Campaigns</a></Link>
+                <Link route='/campaigns/new'><a className='item'>
+                    <Button icon="add" primary/></a></Link>
             </Menu.Menu>
         </Menu>
     )
