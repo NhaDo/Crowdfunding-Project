@@ -27,15 +27,14 @@ class CampaignNew extends Component{
             
             //success message!
             this.setState({success: true});
-            setTimeout(() => {this.setState({success: false})}, 2000);
-
-            //back to index page
-            Router.pushRoute('/')
+            //back to index page after 2s, let viewer see the success prompt a bit
+            setTimeout(() => { Router.pushRoute('/')}, 1000);
+           
 
         } catch (err) {
             this.setState({errorMessage: err.message})
         }
-        this.setState({loading: false})
+        this.setState({loading: false, value: ''})
     }
 
     render(){

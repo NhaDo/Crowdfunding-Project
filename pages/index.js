@@ -4,6 +4,7 @@ import factory from '../ethereum/factory'
 import 'semantic-ui-css/semantic.min.css'
 import Layout from '../components/layout'
 import {Link} from '../routes'
+
 class CampaignIndex extends Component{
     static async getInitialProps(){
         let campaigns = await factory.methods.getDeployedCampaigns().call();
