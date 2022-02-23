@@ -94,6 +94,6 @@ contract Campaign{
     }
     
     function getRequestsCount() public view returns (uint){
-        return(numRequests+1);
+        return(numRequests);
     }
 }
