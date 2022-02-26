@@ -65,6 +65,7 @@ class RequestIndex extends Component{
                     </Header>
                     <Body>{this.renderRows()}</Body>
                 </Table>
+                <i>Hint: Approval count must be {'>'} 50% for the request to be finalized</i>
             </Layout>
         );
     }
