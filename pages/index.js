@@ -1,5 +1,5 @@
 import { Component } from 'react/cjs/react.production.min';
-import { Card, Button, Search } from 'semantic-ui-react';
+import { Card, Button, Input } from 'semantic-ui-react';
 import factory from '../ethereum/factory'
 import 'semantic-ui-css/semantic.min.css'
 import Layout from '../components/layout'
@@ -8,8 +8,7 @@ import {Link} from '../routes'
 class CampaignIndex extends Component{
     state = {
         loading: false,
-        results: [],
-        value: ''
+        searchValue: '',
     }
 
     static async getInitialProps(){
@@ -17,7 +16,7 @@ class CampaignIndex extends Component{
         return{ campaigns: campaigns };        
     }
     
-    renderCampaigns(){
+    loadAllCampaigns(){
         const items = this.props.campaigns.map(address => {
             return{
                 header: address,
@@ -28,8 +27,19 @@ class CampaignIndex extends Component{
                 fluid: true,
             }
         });
-
+        return items;
+    }
+    renderCampaigns(){
+        const items = this.loadAllCampaigns();
         return <Card.Group items={items}/>
+    }
+    renderSearchResults(){
+        const items = this.loadAllCampaigns();
+        //filter results
+        const results = items.filter(function(obj){
+            return obj["header"].includes('4');
+        })
+        return <Card.Group items={results}/>
     }
 
     render(){
@@ -38,12 +48,21 @@ class CampaignIndex extends Component{
             <Layout>
                 <div>
                     <h2>Open Campaigns</h2>
-                    <Search size='small'
-                        input={{ fluid: true }}
+                    <Button 
+                        floated='right'
+                        icon="search" //primary: color the button blue
+                        basic primary
+                    />
+                    <Input
+                        fluid
                         style={{marginBottom: '30px'}}
                         loading={this.state.loading}
-                        placeholder='Search campaign ADDRESS...'                        
+                        placeholder='Search campaign ADDRESS...'  
+                        value={this.state.searchValue}
+                        onChange={event =>
+                            this.setState({searchValue: event.target.value})}
                     />
+
                     <Link route='/campaigns/new'>
                         <a>
                             <Button 
@@ -55,7 +74,7 @@ class CampaignIndex extends Component{
                         </a>
                     </Link>
 
-                    {this.renderCampaigns()}
+                    {this.renderSearchResults()}
                 </div>
             </Layout>
         )
