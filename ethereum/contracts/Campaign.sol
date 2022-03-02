@@ -3,8 +3,10 @@ pragma solidity ^0.8.7;
 
 contract CampaignFactory{
     address[] public deployedCampaigns;
-    function createCampaign(uint minimum) public {
-        Campaign newCampaign = new Campaign(minimum, msg.sender);
+    function createCampaign(uint minimum, 
+        string memory _campaignName, string memory _creatorName) public {
+        Campaign newCampaign = 
+            new Campaign(minimum, msg.sender, _campaignName, _creatorName);
         deployedCampaigns.push(address(newCampaign));
     }
 
@@ -28,6 +30,8 @@ contract Campaign{
     uint numRequests = 0;
     mapping (uint => Request) public requests;
     uint public approversCount;
+    string public campaignName;
+    string public creatorName;
 
 
     modifier restricted(){
@@ -39,15 +43,22 @@ contract Campaign{
         require(approvers[msg.sender]);
         _;
     }
-    constructor(uint minimum, address creator){
+    constructor(uint minimum, 
+        address creator, 
+        string memory _campaignName, 
+        string memory _creatorName){
         manager = creator;
         minimumContribution = minimum;
+        campaignName = _campaignName;
+        creatorName = _creatorName;
     }
 
     function contribute() public payable{
-        require(msg.value > minimumContribution); 
-        approvers[payable(msg.sender)] = true;
-        approversCount++;
+        require(msg.value > minimumContribution);
+        if (!approvers[payable(msg.sender)]) {
+            approvers[payable(msg.sender)] = true;
+            approversCount++;
+        }
     }
 
     function createRequest(string memory _description, uint _value, address payable _recipient) 
@@ -82,14 +93,18 @@ contract Campaign{
         uint,
         uint,
         uint,
-        address
+        address,
+        string memory,
+        string memory
     ){
         return(
             minimumContribution,
             address(this).balance,
             numRequests,
             approversCount,
-            manager
+            manager,
+            campaignName,
+            creatorName
         );
     }
     

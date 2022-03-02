@@ -1,13 +1,14 @@
 import React,{ Component } from 'react';
 import Layout from  '../../components/layout';
 import 'semantic-ui-css/semantic.min.css';
-import {Form, Button, Input, Message} from 'semantic-ui-react';
+import {Form, Button, Input, Message, FormField} from 'semantic-ui-react';
 import factory from '../../ethereum/factory'
 import web3 from '../../ethereum/web3'
 import {Router, Link} from '../../routes'
-
 class CampaignNew extends Component{
     state = {
+        campaignName: '',
+        creatorName: '',
         minimumContribution: '',
         errorMessage: '',
         loading: false,
@@ -20,8 +21,12 @@ class CampaignNew extends Component{
         try{
             await window.ethereum.enable();//need this to load accounts
             const accounts = await web3.eth.requestAccounts();
-            
-            await factory.methods.createCampaign(this.state.minimumContribution).send({
+            const {minimumContribution, campaignName, creatorName} = this.state;
+
+            await factory.methods.createCampaign(
+                minimumContribution,
+                campaignName,
+                creatorName).send({
                 from: accounts[0],
             });
             
@@ -44,6 +49,23 @@ class CampaignNew extends Component{
             <Form onSubmit={this.onSubmit} 
                 error={!!this.state.errorMessage}
                 success={this.state.success}>
+                
+                <Form.Field>
+                    <label>Campaign Title</label>
+                    <Input 
+                        value={this.state.campaignName}
+                        onChange={event => 
+                            this.setState({campaignName: event.target.value})}
+                    />
+                </Form.Field>
+                <FormField>
+                    <label>Creator Name</label>
+                    <Input
+                        value={this.state.creatorName}
+                        onChange={event => 
+                            this.setState({creatorName: event.target.value})}
+                    />
+                </FormField>
                 <Form.Field>
                     <label>Minumum Contribution</label>
                     <Input label='Wei'

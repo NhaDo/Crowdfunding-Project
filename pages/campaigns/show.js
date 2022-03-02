@@ -11,14 +11,16 @@ class CampaignShow extends Component{
         //console.log(props.query.address);
         const campaign = Campaign(props.query.address);
         const summary = await campaign.methods.getSummary().call();
-        //console.log(summary);
+        console.log(summary);
         return{ 
             address: props.query.address,
             minimumContribution: summary[0],
             balance:summary[1],
             requestsCount: summary[2],
             approversCount: summary[3],
-            manager: summary[4]
+            manager: summary[4],
+            campaignName: summary[5],
+            creatorName: summary[6]
         };
     }
 
@@ -28,16 +30,33 @@ class CampaignShow extends Component{
             manager,
             minimumContribution,
             requestsCount,
-            approversCount
+            approversCount,
+            campaignName,
+            creatorName
         } = this.props;
 
         const items = [
-            {
+              {
+                header: 'Campaign title',
+                description:
+                  'The campaign name.',
+                style: {overflowWrap: 'break-word'},
+                color: 'blue',
+                extra: campaignName,
+              },
+              {
+                header: 'Campaign creator',
+                description:
+                  'The company/individual created this campaign.',
+                style: {overflowWrap: 'break-word'},
+                color: 'blue',
+                extra: creatorName,
+              },
+              {
                 header: 'Address of manager',
                 description:
                   'The manager created this campaign and can create requests to withdraw money.',
                 style: {overflowWrap: 'break-word'},
-                color: 'blue',
                 extra: manager,
               },
               {
@@ -56,6 +75,7 @@ class CampaignShow extends Component{
                 style: {overflowWrap: 'break-word'},
                 color: 'blue',
                 extra: requestsCount,
+                href: `/campaigns/${this.props.address}/requests`
               },
               {
                 header: 'Number of approvers',
@@ -63,7 +83,8 @@ class CampaignShow extends Component{
                     'Number of people who have already donated to this campaign.',
                 style: {overflowWrap: 'break-word'},
                 color: 'blue',
-                extra: approversCount,            
+                extra: approversCount, 
+                href: `/campaigns/${this.props.address}/approvers`           
               },
               {
                 header: 'Campaign balance (ETH)',
@@ -72,7 +93,7 @@ class CampaignShow extends Component{
                 style: {overflowWrap: 'break-word'},
                 color: 'blue',
                 extra: web3.utils.fromWei(balance, 'ether') + ' ETH',
-              }
+              },
         ]
         return <Card.Group items={items}/>
     }
@@ -85,22 +106,12 @@ class CampaignShow extends Component{
             </Link>
             <h3>Campaigns Details</h3>
             <Grid>
-              <Grid.Row>
-                <Grid.Column width={10}>
-                  {this.renderCards()}
-                </Grid.Column>              
-                <Grid.Column width={6}>
-                  <ContributeForm address={this.props.address}/>
-                </Grid.Column>
-              </Grid.Row>
-
-              <Grid.Row>
-                <Grid.Column>
-                <Link route={`/campaigns/${this.props.address}/requests`}>
-                    <Button primary>View all requests</Button>
-                  </Link>
-                </Grid.Column>
-              </Grid.Row>
+              <Grid.Column width={10}>
+                {this.renderCards()}
+              </Grid.Column>              
+              <Grid.Column width={6}>
+                <ContributeForm address={this.props.address}/>
+              </Grid.Column>              
             </Grid>
         </Layout>
         )
